@@ -1,0 +1,53 @@
+path:
+  cache: '/temp/vqa-data/FVQA/cache/'
+  raw: '/temp/vqa-data/FVQA/Name_Lists/'
+  all_qs: '/temp/vqa-data/FVQA/new_dataset_release/all_qs_dict_release.json'
+  img: '/temp/vqa-data/FVQA/new_dataset_release/images/'
+  feat_ids: './data/img_ids/fvqa_imgid2idx.json' # image id to feature matrix index
+  img_feat: '/temp/vqa-data/FVQA/img_feat.h5'
+  kb: '/temp/vqa-data/FVQA/new_dataset_release/all_fact_triples_release.json' # raw downloaded knowledge 
+  knowledge: '/temp/vqa-data/FVQA/knowledge.json'
+  knowledge_embed: '/temp/vqa-data/FVQA/knowledge_embed.pt' # pre-trained embedding
+
+run:
+  seed: 1111
+  num_workers: 4
+  output_path: './output/fvqa/'
+  min_occurance: 1 # answer frequency less than min will be omitted
+  epochs: 15
+  lr: 1.0e-4
+  dropout: 0.3 # dropout rate for the final mlp
+  weight_decay: 1.0e-4
+  lr_scheduler: None 
+
+train:
+  loss_type: 'ce' # 'bce' or 'ce'
+  hidden_size: 768 # follow bert settings
+  q_max_len: 15 # max question length
+  k_max_len: 10 # max knowledge length per triplet
+  k_max_num: 3 # max utilized knowledge triplets
+  num_fix_layer: 0 # number of fixed bert layers (middle)
+
+transformer:
+  model_name: 'vilt'
+  checkpoint_token: "dandelin/vilt-b32-finetuned-vqa"
+  checkpoint_model: "dandelin/vilt-b32-finetuned-vqa"
+  tokenizer: "BertTokenizerFast"
+  vlp_model: "ViltForQuestionAnswering"
+  img_embed: False # whether use the extracted image feature
+
+# transformer:
+#   model_name: 'lxmert'
+#   checkpoint_token: "unc-nlp/lxmert-base-uncased"
+#   checkpoint_model: "unc-nlp/lxmert-base-uncased"
+#   tokenizer: "BertTokenizerFast"
+#   vlp_model: "LxmertForQuestionAnswering"
+#   img_embed: True # whether use the raw image pixel 
+
+# transformer:
+#   model_name: 'visualbert'
+#   checkpoint_token: "bert-base-uncased"
+#   checkpoint_model: "uclanlp/visualbert-vqa"
+#   tokenizer: "BertTokenizerFast"
+#   vlp_model: "VisualBertForQuestionAnswering"
+#   img_embed: True # whether use the extracted image feature
